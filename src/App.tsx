@@ -8,6 +8,7 @@ import ProtectedRoute from "@/components/ProtectedRoute";
 import LoginPage from "@/pages/LoginPage";
 import AdminDashboard from "@/pages/AdminDashboard";
 import TeacherDashboard from "@/pages/TeacherDashboard";
+import StudentDashboard from "@/pages/StudentDashboard";
 
 const queryClient = new QueryClient();
 
@@ -18,6 +19,8 @@ const DashboardRouter = () => {
     return <AdminDashboard />;
   } else if (user?.role === 'teacher') {
     return <TeacherDashboard />;
+  } else if (user?.role === 'student') {
+    return <StudentDashboard />;
   }
   
   return <Navigate to="/login" replace />;
