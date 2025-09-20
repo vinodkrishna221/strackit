@@ -136,35 +136,37 @@ const AttendanceTable = ({
           </div>
           
           {/* Date headers */}
-          <div className="flex-1 overflow-x-auto">
-            <div className="flex min-w-max">
-              {dates.map(date => {
-                const dayOfMonth = parseInt(date.split('-')[2]);
-                const isToday = date === today;
-                const holiday = isHoliday(date);
-                const dayName = format(new Date(date), 'EEE');
-                return (
-                  <div
-                    key={date}
-                    className={`min-w-[60px] p-2 text-center border-r border-border/50 ${
-                      isToday ? 'bg-primary/10 font-medium' : ''
-                    } ${holiday ? 'bg-orange-50' : ''}`}
-                  >
-                    <div className="text-xs text-muted-foreground">{dayName}</div>
-                    <div className="text-sm font-medium">{dayOfMonth}</div>
-                    {isToday && !holiday && (
-                      <Badge variant="secondary" className="text-xs mt-1">
-                        Today
-                      </Badge>
-                    )}
-                    {holiday && (
-                      <Badge variant="outline" className="text-xs mt-1 bg-orange-100 text-orange-700 border-orange-300">
-                        Holiday
-                      </Badge>
-                    )}
-                  </div>
-                );
-              })}
+          <div className="flex-1 overflow-hidden">
+            <div className="overflow-x-auto" id="attendance-scroll">
+              <div className="flex min-w-max">
+                {dates.map(date => {
+                  const dayOfMonth = parseInt(date.split('-')[2]);
+                  const isToday = date === today;
+                  const holiday = isHoliday(date);
+                  const dayName = format(new Date(date), 'EEE');
+                  return (
+                    <div
+                      key={date}
+                      className={`min-w-[60px] p-2 text-center border-r border-border/50 ${
+                        isToday ? 'bg-primary/10 font-medium' : ''
+                      } ${holiday ? 'bg-orange-50' : ''}`}
+                    >
+                      <div className="text-xs text-muted-foreground">{dayName}</div>
+                      <div className="text-sm font-medium">{dayOfMonth}</div>
+                      {isToday && !holiday && (
+                        <Badge variant="secondary" className="text-xs mt-1">
+                          Today
+                        </Badge>
+                      )}
+                      {holiday && (
+                        <Badge variant="outline" className="text-xs mt-1 bg-orange-100 text-orange-700 border-orange-300">
+                          Holiday
+                        </Badge>
+                      )}
+                    </div>
+                  );
+                })}
+              </div>
             </div>
           </div>
           
@@ -189,9 +191,11 @@ const AttendanceTable = ({
               </div>
               
               {/* Attendance cells */}
-              <div className="flex-1 overflow-x-auto">
-                <div className="flex min-w-max">
-                  {dates.map(date => renderAttendanceCell(student, date))}
+              <div className="flex-1 overflow-hidden">
+                <div className="overflow-x-auto attendance-row-scroll">
+                  <div className="flex min-w-max">
+                    {dates.map(date => renderAttendanceCell(student, date))}
+                  </div>
                 </div>
               </div>
               
@@ -207,6 +211,21 @@ const AttendanceTable = ({
             </div>
           );
         })}
+      </div>
+
+      {/* Global horizontal scrollbar */}
+      <div className="border-t bg-muted/30 p-2">
+        <div className="w-full overflow-x-auto" 
+             onScroll={(e) => {
+               const scrollLeft = e.currentTarget.scrollLeft;
+               // Sync all scrollable elements
+               document.getElementById('attendance-scroll')!.scrollLeft = scrollLeft;
+               document.querySelectorAll('.attendance-row-scroll').forEach(el => {
+                 (el as HTMLElement).scrollLeft = scrollLeft;
+               });
+             }}>
+          <div style={{ width: `${dates.length * 60}px`, height: '1px' }}></div>
+        </div>
       </div>
     </div>
   );
