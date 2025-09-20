@@ -42,11 +42,29 @@ const classes: ClassData[] = [
   { id: 2, name: "Class 9", sections: ["A"] },
 ];
 
+// Mock attendance data
+const mockAttendanceData: AttendanceRecord = {
+  '2024-12-02': { 1: 'Present', 2: 'Present', 3: 'Absent', 4: 'Present', 5: 'Present' },
+  '2024-12-03': { 1: 'Present', 2: 'Absent', 3: 'Present', 4: 'Present', 5: 'Absent' },
+  '2024-12-04': { 1: 'Absent', 2: 'Present', 3: 'Present', 4: 'Absent', 5: 'Present' },
+  '2024-12-05': { 1: 'Present', 2: 'Present', 3: 'Present', 4: 'Present', 5: 'Present' },
+  '2024-12-06': { 1: 'Present', 2: 'Absent', 3: 'Present', 4: 'Present', 5: 'Present' },
+  '2024-12-09': { 1: 'Present', 2: 'Present', 3: 'Absent', 4: 'Present', 5: 'Absent' },
+  '2024-12-10': { 1: 'Absent', 2: 'Present', 3: 'Present', 4: 'Present', 5: 'Present' },
+  '2024-12-11': { 1: 'Present', 2: 'Present', 3: 'Present', 4: 'Absent', 5: 'Present' },
+  '2024-12-12': { 1: 'Present', 2: 'Absent', 3: 'Present', 4: 'Present', 5: 'Present' },
+  '2024-12-13': { 1: 'Present', 2: 'Present', 3: 'Present', 4: 'Present', 5: 'Absent' },
+  '2024-12-16': { 1: 'Present', 2: 'Present', 3: 'Absent', 4: 'Present', 5: 'Present' },
+  '2024-12-17': { 1: 'Absent', 2: 'Present', 3: 'Present', 4: 'Present', 5: 'Present' },
+  '2024-12-18': { 1: 'Present', 2: 'Present', 3: 'Present', 4: 'Present', 5: 'Present' },
+  '2024-12-19': { 1: 'Present', 2: 'Absent', 3: 'Present', 4: 'Present', 5: 'Present' },
+};
+
 const AttendancePage = () => {
   const [selectedClass, setSelectedClass] = useState<string>('');
   const [selectedSection, setSelectedSection] = useState<string>('');
   const [selectedMonth, setSelectedMonth] = useState<string>(format(new Date(), 'yyyy-MM'));
-  const [attendance, setAttendance] = useState<AttendanceRecord>({});
+  const [attendance, setAttendance] = useState<AttendanceRecord>(mockAttendanceData);
 
   // Filter students based on selected class and section
   const filteredStudents = useMemo(() => {
@@ -134,6 +152,32 @@ const AttendancePage = () => {
 
   return (
     <div className="space-y-6">
+      {/* Current Date Display */}
+      <div className="bg-card border rounded-lg p-4">
+        <div className="flex items-center justify-between">
+          <div>
+            <h2 className="text-lg font-semibold">Today's Date</h2>
+            <p className="text-2xl font-bold text-primary">
+              {format(new Date(), 'EEEE, MMMM do, yyyy')}
+            </p>
+          </div>
+          <div className="flex items-center space-x-4 text-sm">
+            <div className="flex items-center space-x-2">
+              <div className="w-3 h-3 bg-green-500 rounded-full"></div>
+              <span>Present</span>
+            </div>
+            <div className="flex items-center space-x-2">
+              <div className="w-3 h-3 bg-red-500 rounded-full"></div>
+              <span>Absent</span>
+            </div>
+            <div className="flex items-center space-x-2">
+              <div className="w-3 h-3 bg-orange-500 rounded-full"></div>
+              <span>Holiday</span>
+            </div>
+          </div>
+        </div>
+      </div>
+      
       <Card>
         <CardHeader>
           <CardTitle className="flex items-center space-x-2">

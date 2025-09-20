@@ -42,10 +42,38 @@ const AttendanceTable = ({
     onAttendanceChange(studentId, date, newStatus);
   };
 
+  const isHoliday = (date: string) => {
+    const dayOfWeek = new Date(date).getDay();
+    return dayOfWeek === 0; // Sunday = 0
+  };
+
+  const isPastDate = (date: string) => {
+    return date < today;
+  };
+
+  const isFutureDate = (date: string) => {
+    return date > today;
+  };
+
   const renderAttendanceCell = (student: Student, date: string) => {
     const status = getAttendanceStatus(student.id, date);
     const isToday = date === today;
+    const holiday = isHoliday(date);
+    const pastDate = isPastDate(date);
+    const futureDate = isFutureDate(date);
     const dayOfMonth = parseInt(date.split('-')[2]);
+
+    if (holiday) {
+      return (
+        <div key={`${student.id}-${date}`} className="min-w-[60px] p-2 text-center border-r border-border/50">
+          <div className="text-xs text-muted-foreground mb-1">{dayOfMonth}</div>
+          <div className="w-8 h-8 mx-auto bg-orange-100 border-2 border-orange-300 rounded flex items-center justify-center">
+            <div className="w-3 h-3 bg-orange-500 rounded-full"></div>
+          </div>
+          <div className="text-xs text-orange-600 mt-1">Holiday</div>
+        </div>
+      );
+    }
 
     return (
       <div key={`${student.id}-${date}`} className="min-w-[60px] p-2 text-center border-r border-border/50">
@@ -53,20 +81,29 @@ const AttendanceTable = ({
         <Button
           variant={status === 'Present' ? 'default' : status === 'Absent' ? 'destructive' : 'outline'}
           size="sm"
-          className="w-8 h-8 p-0"
+          className={`w-8 h-8 p-0 relative ${
+            status === 'Present' ? 'bg-green-100 border-green-300 hover:bg-green-200' : 
+            status === 'Absent' ? 'bg-red-100 border-red-300 hover:bg-red-200' : ''
+          }`}
           onClick={() => handleToggleAttendance(student.id, date)}
-          disabled={!isToday && !status} // Only allow marking for today or already marked dates
+          disabled={!isToday || holiday} // Only allow marking for today, not holidays
         >
           {status === 'Present' ? (
-            <Check className="w-3 h-3" />
+            <div className="w-4 h-4 bg-green-500 rounded-full"></div>
           ) : status === 'Absent' ? (
-            <X className="w-3 h-3" />
+            <div className="w-4 h-4 bg-red-500 rounded-full"></div>
           ) : (
             <span className="text-xs">-</span>
           )}
         </Button>
-        {isToday && (
+        {isToday && !holiday && (
           <div className="text-xs text-primary mt-1">Today</div>
+        )}
+        {pastDate && !holiday && (
+          <div className="text-xs text-muted-foreground mt-1">Past</div>
+        )}
+        {futureDate && !holiday && (
+          <div className="text-xs text-muted-foreground mt-1">Future</div>
         )}
       </div>
     );
@@ -104,17 +141,25 @@ const AttendanceTable = ({
               {dates.map(date => {
                 const dayOfMonth = parseInt(date.split('-')[2]);
                 const isToday = date === today;
+                const holiday = isHoliday(date);
+                const dayName = format(new Date(date), 'EEE');
                 return (
                   <div
                     key={date}
                     className={`min-w-[60px] p-2 text-center border-r border-border/50 ${
                       isToday ? 'bg-primary/10 font-medium' : ''
-                    }`}
+                    } ${holiday ? 'bg-orange-50' : ''}`}
                   >
-                    <div className="text-sm">{dayOfMonth}</div>
-                    {isToday && (
+                    <div className="text-xs text-muted-foreground">{dayName}</div>
+                    <div className="text-sm font-medium">{dayOfMonth}</div>
+                    {isToday && !holiday && (
                       <Badge variant="secondary" className="text-xs mt-1">
                         Today
+                      </Badge>
+                    )}
+                    {holiday && (
+                      <Badge variant="outline" className="text-xs mt-1 bg-orange-100 text-orange-700 border-orange-300">
+                        Holiday
                       </Badge>
                     )}
                   </div>
