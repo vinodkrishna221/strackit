@@ -1,11 +1,15 @@
+import { useState } from 'react';
 import { useAuth } from '@/contexts/AuthContext';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { LogOut, Users, Calendar, BookOpen } from 'lucide-react';
+import { LogOut, Users, Calendar, BookOpen, Clock } from 'lucide-react';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import AttendancePage from '@/modules/attendance/AttendancePage';
+import TimetablePage from '@/modules/timetable/TimetablePage';
 
 const TeacherDashboard = () => {
   const { user, logout } = useAuth();
+  const [activeTab, setActiveTab] = useState('attendance');
 
   return (
     <div className="min-h-screen bg-background">
@@ -32,7 +36,26 @@ const TeacherDashboard = () => {
 
       {/* Main Content */}
       <div className="container mx-auto px-4 py-6">
-        <AttendancePage />
+        <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
+          <TabsList className="grid w-full grid-cols-2">
+            <TabsTrigger value="attendance" className="flex items-center space-x-2">
+              <Users className="w-4 h-4" />
+              <span>Attendance</span>
+            </TabsTrigger>
+            <TabsTrigger value="timetable" className="flex items-center space-x-2">
+              <Clock className="w-4 h-4" />
+              <span>My Timetable</span>
+            </TabsTrigger>
+          </TabsList>
+
+          <TabsContent value="attendance">
+            <AttendancePage />
+          </TabsContent>
+
+          <TabsContent value="timetable">
+            <TimetablePage teacherId={1} />
+          </TabsContent>
+        </Tabs>
       </div>
     </div>
   );

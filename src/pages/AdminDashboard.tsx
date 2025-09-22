@@ -3,9 +3,10 @@ import { useAuth } from '@/contexts/AuthContext';
 import { Button } from '@/components/ui/button';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { LogOut, Users, BookOpen, BarChart3 } from 'lucide-react';
+import { LogOut, Users, BookOpen, BarChart3, Calendar } from 'lucide-react';
 import ClassesPage from '@/modules/classes/ClassesPage';
 import StudentsPage from '@/modules/students/StudentsPage';
+import TimetablePage from '@/modules/timetable/TimetablePage';
 
 const AdminDashboard = () => {
   const { user, logout } = useAuth();
@@ -37,10 +38,11 @@ const AdminDashboard = () => {
       {/* Main Content */}
       <div className="container mx-auto px-4 py-6">
         <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
-          <TabsList className="grid w-full grid-cols-3">
+          <TabsList className="grid w-full grid-cols-4">
             <TabsTrigger value="overview">Overview</TabsTrigger>
             <TabsTrigger value="classes">Classes</TabsTrigger>
             <TabsTrigger value="students">Students</TabsTrigger>
+            <TabsTrigger value="timetable">Timetable</TabsTrigger>
           </TabsList>
 
           <TabsContent value="overview" className="space-y-6">
@@ -83,7 +85,7 @@ const AdminDashboard = () => {
                 <CardDescription>Manage your school data efficiently</CardDescription>
               </CardHeader>
               <CardContent className="space-y-4">
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                   <Button 
                     variant="outline" 
                     className="h-20 flex-col"
@@ -100,6 +102,14 @@ const AdminDashboard = () => {
                     <Users className="w-6 h-6 mb-2" />
                     Manage Students
                   </Button>
+                  <Button 
+                    variant="outline" 
+                    className="h-20 flex-col"
+                    onClick={() => setActiveTab('timetable')}
+                  >
+                    <Calendar className="w-6 h-6 mb-2" />
+                    Manage Timetable
+                  </Button>
                 </div>
               </CardContent>
             </Card>
@@ -111,6 +121,10 @@ const AdminDashboard = () => {
 
           <TabsContent value="students">
             <StudentsPage />
+          </TabsContent>
+
+          <TabsContent value="timetable">
+            <TimetablePage isAdmin={true} />
           </TabsContent>
         </Tabs>
       </div>
