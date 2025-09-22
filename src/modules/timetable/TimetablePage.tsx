@@ -105,49 +105,55 @@ const TimetablePage = ({ isAdmin = false, teacherId, sectionId }: TimetablePageP
       </div>
 
       <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
-        <TabsList className="grid w-full grid-cols-2">
-          <TabsTrigger value="teacher" className="flex items-center space-x-2">
-            <Users className="w-4 h-4" />
-            <span>Teacher Timetable</span>
-          </TabsTrigger>
-          <TabsTrigger value="section" className="flex items-center space-x-2">
-            <BookOpen className="w-4 h-4" />
-            <span>Section Timetable</span>
-          </TabsTrigger>
-        </TabsList>
+        {/* Only show tabs if not a student view (sectionId not provided) */}
+        {!sectionId && (
+          <TabsList className="grid w-full grid-cols-2">
+            <TabsTrigger value="teacher" className="flex items-center space-x-2">
+              <Users className="w-4 h-4" />
+              <span>Teacher Timetable</span>
+            </TabsTrigger>
+            <TabsTrigger value="section" className="flex items-center space-x-2">
+              <BookOpen className="w-4 h-4" />
+              <span>Section Timetable</span>
+            </TabsTrigger>
+          </TabsList>
+        )}
 
-        <TabsContent value="teacher" className="space-y-6">
-          {/* Teacher Filters */}
-          {isAdmin && !teacherId && (
-            <Card className="animate-fade-in">
-              <CardHeader>
-                <CardTitle>Select Teacher</CardTitle>
-                <CardDescription>Choose a teacher to view their timetable</CardDescription>
-              </CardHeader>
-              <CardContent>
-                <Select value={selectedTeacher} onValueChange={setSelectedTeacher}>
-                  <SelectTrigger className="w-full">
-                    <SelectValue placeholder="Select a teacher" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="1">Dr. Rajesh Kumar</SelectItem>
-                    <SelectItem value="2">Prof. Sunita Sharma</SelectItem>
-                    <SelectItem value="3">Ms. Priya Patel</SelectItem>
-                    <SelectItem value="4">Mr. David Wilson</SelectItem>
-                  </SelectContent>
-                </Select>
-              </CardContent>
-            </Card>
-          )}
+        {/* Only show teacher timetable if not a student view */}
+        {!sectionId && (
+          <TabsContent value="teacher" className="space-y-6">
+            {/* Teacher Filters */}
+            {isAdmin && !teacherId && (
+              <Card className="animate-fade-in">
+                <CardHeader>
+                  <CardTitle>Select Teacher</CardTitle>
+                  <CardDescription>Choose a teacher to view their timetable</CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <Select value={selectedTeacher} onValueChange={setSelectedTeacher}>
+                    <SelectTrigger className="w-full">
+                      <SelectValue placeholder="Select a teacher" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="1">Dr. Rajesh Kumar</SelectItem>
+                      <SelectItem value="2">Prof. Sunita Sharma</SelectItem>
+                      <SelectItem value="3">Ms. Priya Patel</SelectItem>
+                      <SelectItem value="4">Mr. David Wilson</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </CardContent>
+              </Card>
+            )}
 
-          {/* Teacher Timetable */}
-          <TeacherTimetableTable 
-            timetables={getFilteredTeacherTimetables()}
-            isAdmin={isAdmin}
-            onEdit={(timetable) => handleEditTimetable(timetable, 'teacher')}
-            onDelete={(id) => handleDeleteTimetable(id, 'teacher')}
-          />
-        </TabsContent>
+            {/* Teacher Timetable */}
+            <TeacherTimetableTable 
+              timetables={getFilteredTeacherTimetables()}
+              isAdmin={isAdmin}
+              onEdit={(timetable) => handleEditTimetable(timetable, 'teacher')}
+              onDelete={(id) => handleDeleteTimetable(id, 'teacher')}
+            />
+          </TabsContent>
+        )}
 
         <TabsContent value="section" className="space-y-6">
           {/* Section Filters */}
